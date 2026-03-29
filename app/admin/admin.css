@@ -1,0 +1,82 @@
+.admin-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: var(--glassBg);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--glassBorder);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.admin-header h2 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--neon);
+    margin: 0;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.admin-table th, .admin-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--glassBorder);
+}
+
+.admin-table th {
+  color: var(--neon);
+  font-family: 'Outfit', sans-serif;
+}
+
+.admin-btn {
+  background: var(--neon);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.admin-btn.danger {
+  background: #ff4757;
+  color: #fff;
+}
+
+.admin-btn:hover {
+  opacity: 0.8;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.admin-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glassBorder);
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--neon);
+}

@@ -1,0 +1,53 @@
+﻿Ôû▓ Next.js 16.2.1 (Turbopack)
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 2.5s
+  Running TypeScript ...
+  Finished TypeScript in 103ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+node.exe : Error occurred 
+prerendering page 
+"/_not-found". Read more: 
+https://nextjs.org/docs/me
+ssages/prerender-error
+No C:\Program 
+Files\nodejs\npx.ps1:29 
+caractere:3
++   & $NODE_EXE 
+$NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo        
+      : NotSpecified    : 
+(Error occurred .    
+..prerender-error:S    
+tring) [], RemoteEx    
+ception
+    + FullyQualifiedErr   
+ orId : NativeComman    
+dError
+ 
+Error: Event handlers 
+cannot be passed to 
+Client Component props.
+  {src: ..., alt: ..., 
+onError: function onError}
+                          
+      ^^^^^^^^^^^^^^^^
+If you need 
+interactivity, consider 
+converting part of this 
+to a Client Component.
+    at stringify 
+(<anonymous>) {
+  digest: '756472218'
+}
+Export encountered an 
+error on 
+/_not-found/page: 
+/_not-found, exiting the 
+build.
+Ô¿» Next.js build worker 
+exited with code: 1 and 
+signal: null
