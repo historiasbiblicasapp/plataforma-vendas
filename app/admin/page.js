@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../lib/firebase';
 import './admin.css';
 
 export default function AdminPage() {
@@ -49,23 +50,21 @@ export default function AdminPage() {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('file', file);
-
         try {
-            const res = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-            if (data.success) {
-                setForm({ ...form, imagemUrl: data.url });
-            } else {
-                alert('Erro no upload: ' + data.error);
-            }
+            // Gera um nome único
+            const uniqueFilename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+            const storageRef = ref(storage, `produtos/${uniqueFilename}`);
+            
+            // Sobe o arquivo pro Firebase Cloud Storage
+            const uploadTask = await uploadBytes(storageRef, file);
+            
+            // Recebe de volta um link publico HTTPS eterno
+            const downloadUrl = await getDownloadURL(uploadTask.ref);
+            
+            setForm({ ...form, imagemUrl: downloadUrl });
         } catch (error) {
             console.error(error);
-            alert('Falha ao fazer upload da imagem.');
+            alert('Falha ao fazer upload da imagem no Firebase Storage.');
         }
     };
 
