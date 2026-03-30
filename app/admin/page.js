@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../lib/firebase';
+import { db } from '../../lib/firebase';
 import './admin.css';
 
 export default function AdminPage() {
@@ -15,6 +14,7 @@ export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loginStr, setLoginStr] = useState('');
     const [passStr, setPassStr] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -50,21 +50,32 @@ export default function AdminPage() {
         const file = e.target.files[0];
         if (!file) return;
 
+        setIsUploading(true);
+        console.log("1. Enviando arquivo para o Proxy Interno (Bypass CORS)...");
+
         try {
-            // Gera um nome único
-            const uniqueFilename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
-            const storageRef = ref(storage, `produtos/${uniqueFilename}`);
-            
-            // Sobe o arquivo pro Firebase Cloud Storage
-            const uploadTask = await uploadBytes(storageRef, file);
-            
-            // Recebe de volta um link publico HTTPS eterno
-            const downloadUrl = await getDownloadURL(uploadTask.ref);
-            
-            setForm({ ...form, imagemUrl: downloadUrl });
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                console.log("2. Upload completo via Servidor!", data.url);
+                setForm(prev => ({ ...prev, imagemUrl: data.url }));
+            } else {
+                throw new Error(data.error || 'Erro no servidor');
+            }
         } catch (error) {
-            console.error(error);
-            alert('Falha ao fazer upload da imagem no Firebase Storage.');
+            console.error("ERRO COMPLETO:", error);
+            alert(`Falha no Upload: ${error.message}\n\nTente novamente ou use uma foto menor.`);
+        } finally {
+            setIsUploading(false);
+            console.log("Processo de upload finalizado.");
         }
     };
 
@@ -188,7 +199,7 @@ export default function AdminPage() {
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px' }}>
                     <div style={{ flex: 1 }}>
                         <label style={{display: 'block', fontSize: '14px', marginBottom: '8px', color: 'var(--textDim)'}}>
-                            Imagem do produto (Upload local)
+                            Imagem do produto (Cloud Permanente)
                         </label>
                         <input 
                             type="file" 
@@ -197,8 +208,9 @@ export default function AdminPage() {
                             onChange={handleFileUpload}
                             style={{ width: '100%' }}
                         />
+                        {isUploading && <span style={{fontSize: '12px', color: 'var(--neon)', display: 'block', marginTop: '5px'}}>Enviando para nuvem permanente, aguarde...</span>}
                     </div>
-                    {form.imagemUrl && (
+                    {form.imagemUrl && !isUploading && (
                         <div>
                             <img src={form.imagemUrl} alt="Preview" style={{ height: '60px', borderRadius: '4px', border: '1px solid var(--glassBorder)' }} />
                         </div>
@@ -206,7 +218,7 @@ export default function AdminPage() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button type="submit" className="admin-btn" disabled={isSaving}>
+                    <button type="submit" className="admin-btn" disabled={isSaving || isUploading}>
                         {isSaving ? 'Salvando...' : (isEditing ? 'Salvar Alterações' : 'Adicionar Produto')}
                     </button>
                     {isEditing && (
