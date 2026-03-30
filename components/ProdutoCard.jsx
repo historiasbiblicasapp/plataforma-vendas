@@ -1,5 +1,5 @@
 export default function ProdutoCard({ produto }) {
-  const zapAdmin = "5511999999999";
+  const zapAdmin = "5524988112657";
   const texto = `Olá! Quero acesso imediato ao *${produto.nome}* no valor de R$ ${produto.preco.toFixed(2).replace('.', ',')}.`;
   const urlFinal = `https://wa.me/${zapAdmin}?text=${encodeURIComponent(texto)}`;
 
@@ -7,9 +7,9 @@ export default function ProdutoCard({ produto }) {
     <div className="produto-card">
       <div className="produto-image-container">
         {produto.imagens && produto.imagens.length > 0 ? (
-          <img 
+          <img
             className="produto-image"
-            src={produto.imagens[0]} 
+            src={produto.imagens[0]}
             alt={produto.nome}
           />
         ) : (
